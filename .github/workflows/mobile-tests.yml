@@ -1,0 +1,62 @@
+name: Mobile Automation Suite
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 10 * * *'
+
+jobs:
+  test-mock:
+    runs-on: ubuntu-latest
+    name: Run Mobile Tests (Mock Mode)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Create reports directory
+        run: mkdir -p reports/screenshots
+
+      - name: Run mobile tests in mock mode
+        env:
+          EXECUTION_MODE: mock
+        run: |
+          pytest --html=reports/report.html --self-contained-html
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobile-test-report
+          path: reports/
+
+  # Uncomment to run on BrowserStack real devices
+  # test-cloud:
+  #   runs-on: ubuntu-latest
+  #   name: Run Mobile Tests (BrowserStack)
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-python@v5
+  #       with:
+  #         python-version: '3.11'
+  #     - run: pip install -r requirements.txt
+  #     - name: Run on BrowserStack
+  #       env:
+  #         EXECUTION_MODE: cloud
+  #         CLOUD_PROVIDER: browserstack
+  #         BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+  #         BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+  #       run: pytest --html=reports/report.html --self-contained-html
