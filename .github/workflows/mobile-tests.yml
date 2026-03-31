@@ -41,7 +41,7 @@ jobs:
         if: always()
         with:
           name: mobile-test-report
-          path: reports/
+          path: reports/report.html
 
   # Uncomment to run on BrowserStack real devices
   # test-cloud:
