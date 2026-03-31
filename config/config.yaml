@@ -1,0 +1,52 @@
+# Mobile Automation Configuration
+# Switch 'mode' between 'mock', 'local', or 'cloud'
+
+mode: "mock"
+
+android:
+  platform_name: "Android"
+  platform_version: "13.0"
+  device_name: "Android Emulator"
+  app_package: "com.saucelabs.mydemoapp.android"
+  app_activity: ".MainActivity"
+  automation_name: "UiAutomator2"
+  app: "./apps/android/MyDemoApp.apk"
+
+ios:
+  platform_name: "iOS"
+  platform_version: "16.0"
+  device_name: "iPhone 14"
+  bundle_id: "com.saucelabs.mydemoapp.ios"
+  automation_name: "XCUITest"
+  app: "./apps/ios/MyDemoApp.app"
+
+local:
+  appium_server_url: "http://localhost:4723"
+
+cloud:
+  browserstack:
+    server_url: "https://hub-cloud.browserstack.com/wd/hub"
+    username: "${BROWSERSTACK_USERNAME}"
+    access_key: "${BROWSERSTACK_ACCESS_KEY}"
+    android_device: "Samsung Galaxy S23"
+    ios_device: "iPhone 14"
+  saucelabs:
+    server_url: "https://ondemand.us-west-1.saucelabs.com/wd/hub"
+    username: "${SAUCE_USERNAME}"
+    access_key: "${SAUCE_ACCESS_KEY}"
+
+timeouts:
+  implicit_wait: 10
+  explicit_wait: 20
+  page_load: 30
+
+test_data:
+  valid_user:
+    username: "bod@example.com"
+    password: "10203040"
+  invalid_user:
+    username: "invalid@test.com"
+    password: "wrongpass"
+  product:
+    name: "Sauce Labs Backpack"
+    price: 29.99
