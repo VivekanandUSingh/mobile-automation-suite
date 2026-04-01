@@ -5,7 +5,6 @@
 ![Appium](https://img.shields.io/badge/Appium-3.1-purple)
 ![Platforms](https://img.shields.io/badge/Platforms-Android%20%7C%20iOS-green)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
-
 [![Allure Report](https://img.shields.io/badge/Allure-Report-orange)](https://vivekanandusingh.github.io/mobile-automation-suite/)
 
 A production-grade mobile test automation framework built with Python and Appium. Covers Android and iOS with a unified Page Object Model, supports three execution modes (mock, local device, cloud farm), and includes cross-platform parity tests.
