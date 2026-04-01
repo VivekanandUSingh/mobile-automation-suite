@@ -8,6 +8,9 @@ on:
   schedule:
     - cron: '0 10 * * *'
 
+permissions:
+  contents: write
+
 jobs:
   test-mock:
     runs-on: ubuntu-latest
@@ -48,14 +51,14 @@ jobs:
         run: |
           allure generate reports/allure-results --clean -o reports/allure-report
 
-      - name: Upload HTML report
+      - name: Upload HTML report artifact
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: html-test-report
           path: reports/report.html
 
-      - name: Upload Allure report
+      - name: Upload Allure results artifact
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -75,12 +78,11 @@ jobs:
         with:
           name: failure-screenshots
           path: reports/screenshots/
-          
+
       - name: Deploy Allure report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         if: always()
         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            publish_dir: reports/allure-report
-            publish_branch: gh-pages
-          
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: reports/allure-report
+          publish_branch: gh-pages
