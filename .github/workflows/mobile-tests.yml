@@ -76,3 +76,11 @@ jobs:
           name: failure-screenshots
           path: reports/screenshots/
           
+      - name: Deploy Allure report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: always()
+        with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            publish_dir: reports/allure-report
+            publish_branch: gh-pages
+          
