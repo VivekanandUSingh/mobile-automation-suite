@@ -27,36 +27,52 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Install Allure CLI
+        run: |
+          wget -q https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+          tar -zxf allure-2.27.0.tgz
+          sudo mv allure-2.27.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
+
       - name: Create reports directory
-        run: mkdir -p reports/screenshots
+        run: mkdir -p reports/allure-results reports/allure-report reports/screenshots
 
       - name: Run mobile tests in mock mode
         env:
           EXECUTION_MODE: mock
         run: |
-          pytest --html=reports/report.html --self-contained-html
+          pytest --html=reports/report.html --self-contained-html --alluredir=reports/allure-results
 
-      - name: Upload test report
+      - name: Generate Allure report
+        if: always()
+        run: |
+          allure generate reports/allure-results --clean -o reports/allure-report
+
+      - name: Upload HTML report
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile-test-report
-          path: reports/
+          name: html-test-report
+          path: reports/report.html
 
-  # Uncomment to run on BrowserStack real devices
-  # test-cloud:
-  #   runs-on: ubuntu-latest
-  #   name: Run Mobile Tests (BrowserStack)
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-python@v5
-  #       with:
-  #         python-version: '3.11'
-  #     - run: pip install -r requirements.txt
-  #     - name: Run on BrowserStack
-  #       env:
-  #         EXECUTION_MODE: cloud
-  #         CLOUD_PROVIDER: browserstack
-  #         BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
-  #         BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-  #       run: pytest --html=reports/report.html --self-contained-html
+      - name: Upload Allure report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-report
+          path: reports/allure-report
+
+      - name: Upload test log
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-log
+          path: reports/test.log
+
+      - name: Upload screenshots on failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: failure-screenshots
+          path: reports/screenshots/
+          
